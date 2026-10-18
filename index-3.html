@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101329">
+<title>Discover You Age</title>
+<style>
+  :root { color-scheme: dark; --bg:#101329; --card:#191e3c; --text:#f6f7ff; --muted:#aab0d0; --accent:#9a8cff; --accent2:#61e6d3; }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--text); background:radial-gradient(ellipse at top left,#29245a 0,transparent 42%),radial-gradient(ellipse at bottom right,#123c4b 0,transparent 40%),var(--bg); display:grid; place-items:center; padding:24px; }
+  .wrap { width:min(100%, 720px); }
+  .brand { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:24px; }
+  .logo { width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#11152c;font-size:23px;font-weight:900;box-shadow:0 8px 28px #7c76ff44; }
+  .brand-name { font-size:clamp(1.1rem,3vw,1.35rem);font-weight:800;letter-spacing:-.04em; }
+  .brand-name span { color:var(--accent2); }
+  .card { background:linear-gradient(145deg,#1d2244ee,#151a32f5);border:1px solid #ffffff18;border-radius:28px;padding:clamp(24px,5vw,44px);box-shadow:0 24px 80px #0005; }
+  .eyebrow { display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:99px;background:#9a8cff18;border:1px solid #9a8cff40;color:#c5bdff;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase; }
+  h1 { margin:18px 0 10px;font-size:clamp(2rem,7vw,3.35rem);line-height:1.05;letter-spacing:-.055em; }
+  h1 span { background:linear-gradient(90deg,#b8adff,#69f1dc);-webkit-background-clip:text;background-clip:text;color:transparent; }
+  .intro { margin:0 0 30px;color:var(--muted);line-height:1.65;max-width:48ch; }
+  .section-label { display:block;font-size:.9rem;font-weight:700;margin-bottom:12px; }
+  .date-fields { display:grid;grid-template-columns:1fr 1.25fr 1.25fr;gap:12px; }
+  .field label { display:block;color:var(--muted);font-size:.8rem;margin:0 0 8px 2px; }
+  select { width:100%;min-width:0;appearance:none;background:#10152c;border:1px solid #ffffff24;border-radius:13px;padding:15px 12px;color:var(--text);font:inherit;outline:none;transition:border-color .2s,box-shadow .2s; }
+  select:focus-visible { border-color:var(--accent);box-shadow:0 0 0 3px #9a8cff30; }
+  .warning { display:flex;gap:12px;align-items:flex-start;margin-top:25px;padding:16px;border:1px solid #ffc66d4a;background:#ffc66d0d;border-radius:16px; }
+  .warning-icon { flex:0 0 auto;font-size:1.2rem; }
+  .warning p { margin:0;color:#f8e6c6;font-size:.91rem;line-height:1.5;font-weight:600; }
+  .consent { display:flex;align-items:flex-start;gap:12px;margin:19px 0 22px;color:#d6daef;font-size:.91rem;line-height:1.5;cursor:pointer; }
+  .consent input { appearance:none;flex:0 0 20px;width:20px;height:20px;margin:1px 0 0;border:1px solid #858bb2;border-radius:6px;background:#10152c;cursor:pointer;display:grid;place-items:center; }
+  .consent input:checked { background:var(--accent2);border-color:var(--accent2); }
+  .consent input:checked::after { content:"✓";font-size:14px;font-weight:900;color:#101329; }
+  button { width:100%;border:0;border-radius:14px;padding:16px 20px;background:linear-gradient(100deg,var(--accent),var(--accent2));color:#101329;font:inherit;font-weight:850;font-size:1rem;cursor:pointer;transition:transform .15s,filter .15s; }
+  button:hover { filter:brightness(1.06);transform:translateY(-1px); }
+  button:focus-visible { outline:3px solid white;outline-offset:3px; }
+  button:disabled { opacity:.45;cursor:not-allowed;transform:none;filter:none; }
+  .message { min-height:24px;margin:14px 0 0;text-align:center;font-size:.9rem;color:#ffc6a8; }
+  .result { display:none;margin-top:18px;padding:18px;border:1px solid #61e6d355;background:#61e6d30d;border-radius:16px;text-align:center; }
+  .result.show { display:block; }
+  .result small { color:var(--muted); }
+  .result strong { display:block;font-size:clamp(1.5rem,5vw,2rem);margin:6px 0;color:var(--accent2); }
+  footer { text-align:center;color:#858bad;font-size:.78rem;margin-top:20px; }
+  @media(max-width:420px) { body{padding:16px}.date-fields{gap:8px}.field label{font-size:.75rem}select{padding:14px 8px;font-size:.92rem}.card{border-radius:22px} }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand"><div class="logo" aria-hidden="true">✦</div><div class="brand-name">Discover <span>You Age</span></div></div>
+  <section class="card" aria-labelledby="heading">
+    <div class="eyebrow">✧ Your age, your choice</div>
+    <h1 id="heading">Discover <span>your age.</span></h1>
+    <p class="intro">Enter your date of birth to get started. Your details stay in this page and aren't sent to a server.</p>
+    <form id="ageForm" novalidate>
+      <span class="section-label">Date of birth</span>
+      <div class="date-fields">
+        <div class="field"><label for="day">Date</label><select id="day" name="day" required><option value="">DD</option></select></div>
+        <div class="field"><label for="month">Month</label><select id="month" name="month" required><option value="">Month</option></select></div>
+        <div class="field"><label for="year">Year</label><select id="year" name="year" required><option value="">YYYY</option></select></div>
+      </div>
+      <div class="warning"><div class="warning-icon" aria-hidden="true">⚠️</div><p>You are revealing your age on your own. Please do not blame the app.</p></div>
+      <label class="consent" for="agree"><input id="agree" type="checkbox"><span>I understand and agree that I am choosing to reveal my age.</span></label>
+      <button id="submitBtn" type="submit" disabled>Discover My Age <span aria-hidden="true">→</span></button>
+      <p class="message" id="message" role="status" aria-live="polite"></p>
+      <div class="result" id="result" aria-live="polite"><small>Your age is</small><strong id="ageText"></strong><small id="nextBirthday"></small></div>
+    </form>
+  </section>
+  <footer>Made for curiosity · Works on phones and computers</footer>
+</main>
+<script>
+const day = document.getElementById('day');
+const month = document.getElementById('month');
+const year = document.getElementById('year');
+const agree = document.getElementById('agree');
+const submitBtn = document.getElementById('submitBtn');
+const message = document.getElementById('message');
+const result = document.getElementById('result');
+const ageText = document.getElementById('ageText');
+const nextBirthday = document.getElementById('nextBirthday');
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+months.forEach((name,i)=>month.add(new Option(name,String(i+1))));
+const today = new Date();
+for(let y=today.getFullYear(); y>=1900; y--) year.add(new Option(String(y),String(y)));
+for(let d=1; d<=31; d++) day.add(new Option(String(d).padStart(2,'0'),String(d)));
+function updateButton(){submitBtn.disabled=!agree.checked;}
+agree.addEventListener('change',updateButton);
+function validDate(y,m,d){const date=new Date(y,m-1,d);return date.getFullYear()===y&&date.getMonth()===m-1&&date.getDate()===d;}
+document.getElementById('ageForm').addEventListener('submit',e=>{
+  e.preventDefault(); message.textContent=''; result.classList.remove('show');
+  const d=Number(day.value),m=Number(month.value),y=Number(year.value);
+  if(!d||!m||!y){message.textContent='Please select your date, month, and year of birth.';return;}
+  if(!validDate(y,m,d)){message.textContent='That date does not exist. Please check your date of birth.';return;}
+  const dob=new Date(y,m-1,d); const now=new Date();
+  if(dob>now){message.textContent='Your date of birth cannot be in the future.';return;}
+  let years=now.getFullYear()-y, monthsOld=now.getMonth()-(m-1), daysOld=now.getDate()-d;
+  if(daysOld<0){monthsOld--;const lastMonthDays=new Date(now.getFullYear(),now.getMonth(),0).getDate();daysOld+=lastMonthDays;}
+  if(monthsOld<0){years--;monthsOld+=12;}
+  ageText.textContent=`${years} years, ${monthsOld} months, ${daysOld} days`;
+  let nextYear=now.getFullYear();
+  let next=new Date(nextYear,m-1,d);
+  if(next < new Date(now.getFullYear(),now.getMonth(),now.getDate())) nextYear++;
+  // Treat a Feb 29 birthday as Feb 28 in non-leap years.
+  if(m===2&&d===29&&next.getMonth()!==1) next=new Date(nextYear,2,0);
+  else next=new Date(nextYear,m-1,d);
+  const daysUntil=Math.round((new Date(next.getFullYear(),next.getMonth(),next.getDate())-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/86400000);
+  nextBirthday.textContent=daysUntil===0?'Happy birthday! 🎉':` ${daysUntil} day${daysUntil===1?'':'s'} until your next birthday`;
+  result.classList.add('show');
+});
+</script>
+</body>
+</html>
